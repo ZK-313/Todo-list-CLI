@@ -10,10 +10,13 @@ public class todolist {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public static String help(){
+        return System.out.println();
+    }
     public static void main(String[] args) {
         ArrayList<String> list = new ArrayList<>(Arrays.asList(args));
         if(list.contains("-h") || list.contains("--help") || list.isEmpty()) {
-            System.out.println(ANSI_BLUE + "Here is a list of commands in blue" + ANSI_RESET);
+            System.out.println("Usage: ");
         }
         for(int i = 0; i < list.size(); i++){
             if(list.get(i).equals("-")){
