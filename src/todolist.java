@@ -10,8 +10,8 @@ public class todolist {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
-    public static String help(){
-        return System.out.println();
+    public static void help(){
+        System.out.println("help message");
     }
     public static void main(String[] args) {
         ArrayList<String> list = new ArrayList<>(Arrays.asList(args));
