@@ -20,7 +20,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fully.qualified.MainClass</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.example.Todo</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -41,6 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
                 <!-- Here come other details
                 ...
                 -->
@@ -48,7 +50,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>fully.qualified.MainClass</mainClass>
+                            <mainClass>org.example.Todo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

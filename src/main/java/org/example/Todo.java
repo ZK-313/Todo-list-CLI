@@ -10,14 +10,23 @@ public class Todo {
                 .argName("items")
                 .desc("Add a new item")
                 .build();
+        Option help = Option.builder("h")
+                .longOpt("help")
+                .desc("Shows help message")
+                .build();
         options.addOption(add);
+        options.addOption(help);
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = parser.parse(options, args);
-        List<String> a = cmd.getArgList();
-        for(String b: a){
-            System.out.println(b);
+        if (cmd.hasOption("a")) {
+            String[] a = cmd.getOptionValues("a");
+            System.out.println(a[0]);
         }
-        formatter.printHelp("todo", options, true);
+
+        if(cmd.hasOption("h")){
+            formatter.printHelp("todo", options, true);
+        }
+
     }
 }
