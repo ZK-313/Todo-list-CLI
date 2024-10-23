@@ -33,13 +33,13 @@ public class Todo {
         }
     }*/
 
-    /*public void saveTodoList(ArrayList<Item> todoList) {
+    public void saveTodoList(ArrayList<Item> todoList) {
         String jarDir = getJarDirectory(); // Get the directory of the JAR file
         String todoListFilePath = Paths.get(jarDir, "todo_list.ser").toString(); // Construct the path for .ser file
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(todoListFilePath))) {
             oos.writeObject(todoList);
-            System.out.println("Tasks saved successfully to " + todoListFilePath);
+            //System.out.println("Tasks saved successfully to " + todoListFilePath);
         } catch (IOException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
@@ -55,10 +55,10 @@ public class Todo {
             System.out.println("No previous tasks found or error loading tasks. Creating new list.");
             return new ArrayList<>();
         }
-    }*/
+    }
 
 
-    public void saveTodoList(ArrayList<Item> todoList) {
+    /*public void saveTodoList(ArrayList<Item> todoList) {
         String jarDirectory = getJarDirectory(); // Get the JAR directory
         if (jarDirectory != null) {
             String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
@@ -76,6 +76,7 @@ public class Todo {
         String jarDirectory = getJarDirectory(); // Get the JAR directory
         if (jarDirectory != null) {
             String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
+            System.out.println(filePath);
             File file = new File(filePath);
             if (file.exists()) {
                 try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
@@ -93,7 +94,7 @@ public class Todo {
             System.out.println("Could not determine JAR directory.");
             return new ArrayList<>();
         }
-    }
+    }*/
 
 
     private String getJarDirectory() {
@@ -295,8 +296,5 @@ public class Todo {
             }
             new Todo().saveTodoList(todo_list);
         }
-
-
-
     }
 }
