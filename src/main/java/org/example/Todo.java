@@ -9,9 +9,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
+import java.nio.file.Paths;
 
 public class Todo {
-    public void saveTodoList(ArrayList<Item> todoList) {
+    /*public void saveTodoList(ArrayList<Item> todoList) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("todo_list.ser"))) {
             oos.writeObject(todoList);
             //System.out.println("Tasks saved successfully.");
@@ -28,6 +29,43 @@ public class Todo {
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("No previous tasks found or error loading tasks. Creating new list.");
             return new ArrayList<>();
+        }
+    }*/
+
+    public void saveTodoList(ArrayList<Item> todoList) {
+        String jarDir = getJarDirectory(); // Get the directory of the JAR file
+        String todoListFilePath = Paths.get(jarDir, "todo_list.ser").toString(); // Construct the path for .ser file
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(todoListFilePath))) {
+            oos.writeObject(todoList);
+            System.out.println("Tasks saved successfully to " + todoListFilePath);
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    public ArrayList<Item> loadTodoList() {
+        String jarDir = getJarDirectory(); // Get the directory of the JAR file
+        String todoListFilePath = Paths.get(jarDir, "todo_list.ser").toString(); // Construct the path for .ser file
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(todoListFilePath))) {
+            return (ArrayList<Item>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No previous tasks found or error loading tasks. Creating new list.");
+            return new ArrayList<>();
+        }
+    }
+
+
+    private String getJarDirectory() {
+        String jarPath = null;
+        try {
+            // Get the path of the JAR file
+            jarPath = new java.io.File(Todo.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
+            return new java.io.File(jarPath).getParent(); // Return the directory of the JAR file
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
