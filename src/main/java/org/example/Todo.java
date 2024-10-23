@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.*;
 import java.io.ObjectInputStream;
 import java.util.Objects;
 import java.nio.file.Paths;
@@ -32,7 +33,7 @@ public class Todo {
         }
     }*/
 
-    public void saveTodoList(ArrayList<Item> todoList) {
+    /*public void saveTodoList(ArrayList<Item> todoList) {
         String jarDir = getJarDirectory(); // Get the directory of the JAR file
         String todoListFilePath = Paths.get(jarDir, "todo_list.ser").toString(); // Construct the path for .ser file
 
@@ -52,6 +53,44 @@ public class Todo {
             return (ArrayList<Item>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("No previous tasks found or error loading tasks. Creating new list.");
+            return new ArrayList<>();
+        }
+    }*/
+
+
+    public void saveTodoList(ArrayList<Item> todoList) {
+        String jarDirectory = getJarDirectory(); // Get the JAR directory
+        if (jarDirectory != null) {
+            String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+                oos.writeObject(todoList);
+            } catch (IOException e) {
+                System.out.println("Error saving tasks: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Could not determine JAR directory.");
+        }
+    }
+    @SuppressWarnings("unchecked")
+    public ArrayList<Item> loadTodoList() {
+        String jarDirectory = getJarDirectory(); // Get the JAR directory
+        if (jarDirectory != null) {
+            String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
+            File file = new File(filePath);
+            if (file.exists()) {
+                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                    return (ArrayList<Item>) ois.readObject();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("Error loading tasks: " + e.getMessage());
+                    return new ArrayList<>();
+                }
+            } else {
+                System.out.println("No previous tasks found. Creating new list.");
+                return new ArrayList<>();
+            }
+        } else {
+            System.out.println("Could not determine JAR directory.");
             return new ArrayList<>();
         }
     }
