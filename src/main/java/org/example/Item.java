@@ -33,7 +33,6 @@ public class Item implements Serializable {
         item.setDone(false);
     }
 
-    // Override the toString() method to return the name of the task
     @Override
     public String toString() {
         return name;
