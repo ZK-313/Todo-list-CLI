@@ -3,6 +3,7 @@ package org.example;
 import java.io.Serializable;
 
 public class Item implements Serializable {
+//public class Item {
     private static final long serialVersionUID = 1L; // Ensures consistency during serialization
     private String name;
     private boolean done;
@@ -16,6 +17,9 @@ public class Item implements Serializable {
     // Getter for the done status
     public boolean isDone() {
         return done;
+    }
+    public String getName(){
+        return name;
     }
 
     // Setter for the done status
@@ -33,7 +37,6 @@ public class Item implements Serializable {
         item.setDone(false);
     }
 
-    // Override the toString() method to return the name of the task
     @Override
     public String toString() {
         return name;

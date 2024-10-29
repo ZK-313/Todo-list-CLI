@@ -12,30 +12,27 @@ import java.io.ObjectInputStream;
 import java.util.Objects;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Todo {
-    /*public void saveTodoList(ArrayList<Item> todoList) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("todo_list.ser"))) {
-            oos.writeObject(todoList);
-            //System.out.println("Tasks saved successfully.");
-        } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
-        }
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public ArrayList<Item> loadTodoList() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("todo_list.ser"))) {
-            return (ArrayList<Item>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("No previous tasks found or error loading tasks. Creating new list.");
-            return new ArrayList<>();
-        }
-    }*/
 
     public void saveTodoList(ArrayList<Item> todoList) {
         String jarDir = getJarDirectory(); // Get the directory of the JAR file
         String todoListFilePath = Paths.get(jarDir, "todo_list.ser").toString(); // Construct the path for .ser file
+        String jsonFilePath = Paths.get(jarDir, "todo_list.json").toString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        //ObjectOutputStream oojson = new ObjectOutputStream(new FileOutputStream(jsonFilePath))
+        try (FileWriter oojson  = new FileWriter(jsonFilePath)) {
+            String jsonArray = objectMapper.writeValueAsString(todoList);
+            //System.out.println(jsonArray);
+            oojson.write(jsonArray);
+        }
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(todoListFilePath))) {
             oos.writeObject(todoList);
@@ -56,45 +53,6 @@ public class Todo {
             return new ArrayList<>();
         }
     }
-
-
-    /*public void saveTodoList(ArrayList<Item> todoList) {
-        String jarDirectory = getJarDirectory(); // Get the JAR directory
-        if (jarDirectory != null) {
-            String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
-                oos.writeObject(todoList);
-            } catch (IOException e) {
-                System.out.println("Error saving tasks: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Could not determine JAR directory.");
-        }
-    }
-    @SuppressWarnings("unchecked")
-    public ArrayList<Item> loadTodoList() {
-        String jarDirectory = getJarDirectory(); // Get the JAR directory
-        if (jarDirectory != null) {
-            String filePath = jarDirectory + File.separator + "todo_list.ser"; // Construct the file path
-            System.out.println(filePath);
-            File file = new File(filePath);
-            if (file.exists()) {
-                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                    return (ArrayList<Item>) ois.readObject();
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    System.out.println("Error loading tasks: " + e.getMessage());
-                    return new ArrayList<>();
-                }
-            } else {
-                System.out.println("No previous tasks found. Creating new list.");
-                return new ArrayList<>();
-            }
-        } else {
-            System.out.println("Could not determine JAR directory.");
-            return new ArrayList<>();
-        }
-    }*/
 
 
     private String getJarDirectory() {
@@ -179,14 +137,17 @@ public class Todo {
 
         if (cmd.hasOption("a")) {
             String[] tasks = cmd.getOptionValues("a");
+            if(tasks == null){
+                System.out.println(RED+"Please provide a task to add!"+RESET);
+            }
             for (String task : tasks) {
-                boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(task));
+                boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(task.toLowerCase()));
                 if (!exists) {
-                    Item newTask = new Item(task);
+                    Item newTask = new Item(task.toLowerCase());
                     todo_list.add(newTask);
                     //System.out.println(task + " added.");
                 } else {
-                    System.out.println(task + " already exists.");
+                    System.out.println(task.toLowerCase() + " already exists.");
                 }
             }
             new Todo().saveTodoList(todo_list);
@@ -194,9 +155,9 @@ public class Todo {
 
         if (cmd.hasOption("l")) {
             String[] list_args = cmd.getOptionValues("l");
-            if(list_args == null || Objects.equals(list_args[0], "a") || list_args[0].equals("all")) {
+            if(list_args == null || Objects.equals(list_args[0].toLowerCase(), "a") || list_args[0].toLowerCase().equals("all")) {
                 if(todo_list.isEmpty()){
-                    System.out.println("You have no tasks to complete. Woohoo!");
+                    System.out.println(GREEN+"You have no tasks to complete. Woohoo!"+RESET);
                 } else {
                     for(int i = 0; i < todo_list.size(); i++) {
                         if(todo_list.get(i).isDone()){
@@ -206,7 +167,7 @@ public class Todo {
                         }
                     }
                 }
-            } else if(list_args[0].equals("done") || list_args[0].equals("d")){
+            } else if(list_args[0].toLowerCase().equals("done") || list_args[0].toLowerCase().equals("d")){
                 if(todo_list.isEmpty()){
                     System.out.println(RED+"None of your tasks are complete."+RESET);
                 } else {
@@ -216,7 +177,7 @@ public class Todo {
                         }
                     }
                 }
-            } else if(list_args[0].equals("undone") || list_args[0].equals("u")){
+            } else if(list_args[0].toLowerCase().equals("undone") || list_args[0].toLowerCase().equals("u")){
                 if(todo_list.isEmpty()){
                     System.out.println(RED+"There are no tasks left to do."+RESET);
                 } else {
@@ -240,15 +201,15 @@ public class Todo {
             } else {
                 for(int i = 0; i < tasks.length; i++) {
                     int finalI = i;
-                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI]));
+                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI].toLowerCase()));
                     if(exists) {
                         for(int j = 0; j < todo_list.size(); j++){
-                            if(todo_list.get(j).toString().equals(tasks[i])){
+                            if(todo_list.get(j).toString().equals(tasks[i].toLowerCase())){
                                 todo_list.get(j).setDone(true);
                             }
                         }
                     } else {
-                        System.out.println(RED+"Error! "+tasks[i]+" does not exist."+RESET);
+                        System.out.println(RED+"Error! "+tasks[i].toLowerCase()+" does not exist."+RESET);
                     }
                 }
             }
@@ -261,15 +222,15 @@ public class Todo {
             } else {
                 for(int i = 0; i < tasks.length; i++) {
                     int finalI = i;
-                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI]));
+                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI].toLowerCase()));
                     if(exists) {
                         for(int j = 0; j < todo_list.size(); j++){
-                            if(todo_list.get(j).toString().equals(tasks[i])){
+                            if(todo_list.get(j).toString().equals(tasks[i].toLowerCase())){
                                 todo_list.get(j).setDone(false);
                             }
                         }
                     } else {
-                        System.out.println(RED+"Error! "+tasks[i]+" does not exist."+RESET);
+                        System.out.println(RED+"Error! "+tasks[i].toLowerCase()+" does not exist."+RESET);
                     }
                 }
             }
@@ -282,15 +243,15 @@ public class Todo {
             } else {
                 for(int i = 0; i < tasks.length; i++) {
                     int finalI = i;
-                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI]));
+                    boolean exists = todo_list.stream().anyMatch(item -> item.toString().equals(tasks[finalI].toLowerCase()));
                     if(exists) {
                         for(int j = 0; j < todo_list.size(); j++){
-                            if(todo_list.get(j).toString().equals(tasks[i])){
+                            if(todo_list.get(j).toString().equals(tasks[i].toLowerCase())){
                                 todo_list.remove(todo_list.get(j));
                             }
                         }
                     } else {
-                        System.out.println(RED+"Error! "+tasks[i]+" does not exist."+RESET);
+                        System.out.println(RED+"Error! "+tasks[i].toLowerCase()+" does not exist."+RESET);
                     }
                 }
             }
