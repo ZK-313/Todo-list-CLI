@@ -14,6 +14,78 @@ body {
     min-height: 100vh;
     color: #333;
 }
+/*.checkbutton{
+    border: none;
+    border-radius: 5px;
+    background-color: beige;
+    width: 30px;
+    height: 30px;
+    margin-right: 25px;
+}*/
+/* Initial Red "X" button */
+.checkbutton {
+    border: none;
+    border-radius: 5px;
+    background-color: red;
+    width: 30px;
+    height: 30px;
+    margin-right: 25px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+}
+.checkbutton:hover{
+    border: solid red 1px;
+    background-color: white;
+    color: red;
+}
+
+/* Green checkmark when completed */
+.checkbutton.completed {
+    background-color: green;
+    transform: rotateY(360deg);
+}
+/* Hide the "X" and show a checkmark */
+.checkbutton span {
+    transition: opacity 0.3s ease;
+}
+
+.checkbutton.completed span {
+    opacity: 0; /* Hide the "X" */
+}
+
+.checkbutton::before {
+    content: "";
+    position: absolute;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.checkbutton.completed::before {
+    content: "✓";
+    opacity: 1;
+    color: white;
+}
+.checkbutton.completed:hover{
+    border: solid green 1px;
+    background-color: white;
+    color: green;
+}
+.checkbutton.completed:hover::before {
+    color: green;
+}
+
+
+
 
 /* Container styling */
 .todo-container {
