@@ -5,14 +5,49 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder"
   },
   "author": "Zulfiqar Khan",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^33.0.2"
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8"
   },
   "dependencies": {
     "powershell": "^2.3.2"
+  },
+  "build": {
+    "appId": "com.zulfiqar.todoapp",
+    "productName": "TodoApp",
+    "files": [
+      {
+        "from": "./",
+        "to": "./",
+        "filter": [
+          "index.js",
+          "index.html",
+          "index.css",
+          "renderer.js",
+          "preload.js"
+        ]
+      }
+    ],
+    "extraFiles": [
+      {
+        "from": "resources/todo-cli/",
+        "to": "todo-cli/cli",
+        "filter": ["**/*.jar", "install.bat"]
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerLanguages": ["en_US"],
+      "include": "installer.nsh"
+    }
   }
 }
