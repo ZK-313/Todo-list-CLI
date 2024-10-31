@@ -107,10 +107,32 @@ body {
 
 /* To-Do List */
 .todo-list {
+    max-height: 237px;
+    overflow: auto;
     list-style-type: none;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 10px;
+}
 
-/* To-Do Item */
+/* Track */
+::-webkit-scrollbar-track {
+    border: 10px;
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 .todo-item {
     padding: 10px;
     margin-bottom: 10px;
@@ -119,6 +141,15 @@ body {
     border-radius: 4px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+.rem {
+    border: none;
+    background-color: transparent;
+    margin-left: auto; /* Push it to the right */
+    cursor: pointer; /* Change cursor to indicate it's clickable */
+    color: red; /* Optional: Change color to indicate it's a delete action */
+    font-size: 18px; /* Size of the minus sign */
 }
 
 /* Checkbox styling */
@@ -148,6 +179,16 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+#error-msg-container{
+    padding-top: 15px;
+    text-align: center;
+}
+#error-msg{
+    color: red;
+    text-align: center;
+    font-size: 15px;
+    display: none;
 }
 
 .add-task button:hover {

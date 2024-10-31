@@ -1,85 +1,99 @@
-/*document.addEventListener("DOMContentLoaded", () => {
-    console.log("Script loaded and running");  // Check if this message appears
-    const checkButtons = document.querySelectorAll(".checkbutton");
-
-    checkButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            button.classList.toggle("completed");
-        });
-    });
-});*/
-
 const fs = require('fs');
 const path = require('path');
 const PowerShell = require("powershell");
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const todoList = document.getElementById('todo-list');
+    //const filePath = path.join(__dirname, 'todo_list.json');
+    const filePath = path.join("C:\\Users\\Zulfi\\todo-cli\\todo_list.json");
+    let todos = [];
 
     // Load todo items from JSON file
-    //const filePath = path.join(__dirname, 'todo_list.json');
-    //const filePath = path.join("C:\\Users\\Zulfi\\todo-cli\\todo_list.json");
     fs.readFile(filePath, 'utf-8', (err, data) => {
         if (err) {
             console.error('Error reading file:', err);
             return;
         }
 
-        const todos = JSON.parse(data);
+        todos = JSON.parse(data);
         todos.forEach((todo, index) => {
-            // Create a list item and button dynamically
-            const li = document.createElement("li");
-            li.className = "todo-item";
-            li.id = `entry${index}`;
-
-            const button = document.createElement("button");
-            button.className = "checkbutton";
-            button.id = `${index}`;
-            button.innerHTML = '<span>x</span>';
-
-            // Apply the completed class if the todo is done
-            if (todo.done) {
-                button.classList.add("completed");
-            }
-
-            const taskText = document.createElement("span");
-            taskText.textContent = todo.name;
-
-            // Append the button and task text to the list item
-            li.appendChild(button);
-            li.appendChild(taskText);
-            todoList.appendChild(li);
-
-            // Add the click event listener for toggling
-            button.addEventListener("click", () => {
-                // Toggle the 'done' status and the 'completed' class
-                todo.done = !todo.done;
-                button.classList.toggle("completed");
-                updateTodoFile(todos);
-
-                // Optional: Log to verify
-                console.log(`Todo item ${index} is now ${todo.done ? "completed" : "not completed"}`);
-                console.log(todos);
-            });
+            appendTodoToList(todo, index);
         });
+
         const addBut = document.getElementById("addBut");
-        addBut.addEventListener("click", () =>{
-            const PowerShell = require("powershell");
+        addBut.addEventListener("click", () => {
             const input = document.getElementById("input_field");
-            if(input.value !== ""){
-                let ps = new PowerShell('todo -a "'+input.value+'"');
-
+            const newTodoText = input.value.trim();
+            const isDuplicate = todos.some(item => item.name === newTodoText);
+            if(isDuplicate){
+                const error_msg = document.getElementById("error-msg");
+                error_msg.innerHTML = "This item is already in the todo list!";
+                error_msg.style.display = "inline";
+                return;
             }
+            else if (newTodoText !== "") {
+                const error_msg = document.getElementById("error-msg");
+                error_msg.style.display = "none";
+                // Add new todo item to the JSON file via PowerShell command
+                let ps = new PowerShell(`todo -a "${newTodoText}"`);
+                // Update local todos array and the screen
+                const newTodo = { name: newTodoText, done: false };
+                todos.push(newTodo);
+                appendTodoToList(newTodo, todos.length - 1);
+                input.value = ""; // Clear input field
+                updateTodoFile(todos); // Save updated list to JSON file
+            }
+        });
 
-            // Handle process errors (e.g. powershell not found)
 
-
-
-        })
     });
 
-    // Function to update the JSON file
+    // Function to add a single todo item to the DOM
+    function appendTodoToList(todo, index) {
+        const li = document.createElement("li");
+        li.className = "todo-item";
+        li.id = `entry${index}`;
+
+        const button = document.createElement("button");
+        button.className = "checkbutton";
+        button.id = `${index}`;
+        button.innerHTML = '<span>x</span>';
+
+        if (todo.done) {
+            button.classList.add("completed");
+        }
+
+        const taskText = document.createElement("span");
+        taskText.textContent = todo.name;
+        const minus = document.createElement("button");
+        minus.className = "rem";
+        minus.id = `rem${index}`;
+        minus.textContent = "-";
+
+        li.appendChild(button);
+        li.appendChild(taskText);
+        li.appendChild(minus);
+
+        todoList.appendChild(li);
+
+        // Add the click event listener for toggling the done status
+        minus.addEventListener("click", () => {
+            // Remove the item from the todos array
+            todos.splice(index, 1); // Remove the todo item from the array based on index
+            // Update the JSON file
+            updateTodoFile(todos);
+            // Remove the li element from the DOM
+            todoList.removeChild(li); // Remove the todo item from the displayed list
+        })
+
+        button.addEventListener("click", () => {
+            todo.done = !todo.done;
+            button.classList.toggle("completed");
+            updateTodoFile(todos);
+        });
+    }
+
+    // Function to update the JSON file with the latest todos
     function updateTodoFile(todos) {
         fs.writeFile(filePath, JSON.stringify(todos, null, 2), (err) => {
             if (err) {
@@ -88,3 +102,77 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//
+//     const todoList = document.getElementById('todo-list');
+//
+//     // Load todo items from JSON file
+//     //const filePath = path.join(__dirname, 'todo_list.json');
+//     const filePath = path.join("C:\\Users\\Zulfi\\todo-cli\\todo_list.json");
+//     fs.readFile(filePath, 'utf-8', (err, data) => {
+//         if (err) {
+//             console.error('Error reading file:', err);
+//             return;
+//         }
+//
+//         const todos = JSON.parse(data);
+//         todos.forEach((todo, index) => {
+//             // Create a list item and button dynamically
+//             const li = document.createElement("li");
+//             li.className = "todo-item";
+//             li.id = `entry${index}`;
+//
+//             const button = document.createElement("button");
+//             button.className = "checkbutton";
+//             button.id = `${index}`;
+//             button.innerHTML = '<span>x</span>';
+//
+//             // Apply the completed class if the todo is done
+//             if (todo.done) {
+//                 button.classList.add("completed");
+//             }
+//
+//             const taskText = document.createElement("span");
+//             taskText.textContent = todo.name;
+//
+//             // Append the button and task text to the list item
+//             li.appendChild(button);
+//             li.appendChild(taskText);
+//             todoList.appendChild(li);
+//
+//
+//             // Add the click event listener for toggling
+//             button.addEventListener("click", () => {
+//                 // Toggle the 'done' status and the 'completed' class
+//                 todo.done = !todo.done;
+//                 button.classList.toggle("completed");
+//                 updateTodoFile(todos);
+//
+//                 // Optional: Log to verify
+//                 console.log(`Todo item ${index} is now ${todo.done ? "completed" : "not completed"}`);
+//                 console.log(todos);
+//             });
+//         });
+//         const addBut = document.getElementById("addBut");
+//         addBut.addEventListener("click", () =>{
+//             const PowerShell = require("powershell");
+//             const input = document.getElementById("input_field");
+//             if(input.value !== ""){
+//                 let ps = new PowerShell('todo -a "'+input.value+'"');
+//                 //updateScreenStuff();
+//             }
+//
+//         })
+//     });
+
+    // Function to update the JSON file
+    // function updateTodoFile(todos) {
+    //     fs.writeFile(filePath, JSON.stringify(todos, null, 2), (err) => {
+    //         if (err) {
+    //             console.error('Error writing file:', err);
+    //         }
+    //     });
+    // }
+//});
