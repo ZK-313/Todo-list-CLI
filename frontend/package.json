@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^33.0.2"
+  },
+  "dependencies": {
+    "powershell": "^2.3.2"
   }
 }

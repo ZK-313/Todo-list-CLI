@@ -11,13 +11,15 @@
 
 const fs = require('fs');
 const path = require('path');
+const PowerShell = require("powershell");
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const todoList = document.getElementById('todo-list');
 
     // Load todo items from JSON file
-    const filePath = path.join(__dirname, 'todo_list.json');
+    //const filePath = path.join(__dirname, 'todo_list.json');
+    //const filePath = path.join("C:\\Users\\Zulfi\\todo-cli\\todo_list.json");
     fs.readFile(filePath, 'utf-8', (err, data) => {
         if (err) {
             console.error('Error reading file:', err);
@@ -63,9 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const addBut = document.getElementById("addBut");
         addBut.addEventListener("click", () =>{
+            const PowerShell = require("powershell");
+            const input = document.getElementById("input_field");
+            if(input.value !== ""){
+                let ps = new PowerShell('todo -a "'+input.value+'"');
+            }
+
+            // Handle process errors (e.g. powershell not found)
+
+
 
         })
-        todos
     });
 
     // Function to update the JSON file
