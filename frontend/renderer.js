@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById("input_field");
             if(input.value !== ""){
                 let ps = new PowerShell('todo -a "'+input.value+'"');
+
             }
 
             // Handle process errors (e.g. powershell not found)
