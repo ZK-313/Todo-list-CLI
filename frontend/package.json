@@ -29,7 +29,8 @@
           "index.html",
           "index.css",
           "renderer.js",
-          "preload.js"
+          "preload.js",
+          "after-pack.js"
         ]
       }
     ],
@@ -40,14 +41,13 @@
         "filter": ["**/*.jar", "install.bat"]
       }
     ],
-    "nsis": {
-      "oneClick": false,
-      "perMachine": true,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "installerLanguages": ["en_US"],
-      "include": "installer.nsh"
-    }
+     "nsis": {
+         "oneClick": false,
+             "perMachine": true,
+             "allowToChangeInstallationDirectory": true,
+             "createDesktopShortcut": true,
+             "createStartMenuShortcut": true,
+             "installerLanguages": ["en_US"]
+     }
   }
 }

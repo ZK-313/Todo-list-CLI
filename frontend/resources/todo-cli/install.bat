@@ -39,4 +39,6 @@ powershell -Command "Add-Content -Path $PROFILE -Value 'if ($PSVersionTable.PSVe
 echo Todo CLI installed successfully.
 echo You can now use the command 'todo -h' to get started.
 
+pause
+
 endlocal

@@ -10,8 +10,8 @@ const createWindow = () => {
         //autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true,  // Enable Node integration
-            contextIsolation: false // Disable context isolation
-        //preload: path.join(__dirname, 'preload.js')
+            contextIsolation: false, // Disable context isolation
+            preload: path.join(__dirname, 'preload.js')
         }
 })
 win.loadFile('index.html')
