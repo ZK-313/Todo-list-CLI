@@ -29,25 +29,18 @@
           "index.html",
           "index.css",
           "renderer.js",
-          "preload.js",
-          "after-pack.js"
+          "preload.js"
         ]
-      }
-    ],
-    "extraFiles": [
-      {
-        "from": "resources/todo-cli/",
-        "to": "todo-cli/cli",
-        "filter": ["**/*.jar", "install.bat"]
       }
     ],
      "nsis": {
          "oneClick": false,
              "perMachine": true,
-             "allowToChangeInstallationDirectory": true,
+             "allowToChangeInstallationDirectory": false,
              "createDesktopShortcut": true,
              "createStartMenuShortcut": true,
-             "installerLanguages": ["en_US"]
+             "installerLanguages": ["en_US"],
+             "include": "installer.nsh"
      }
   }
 }
