@@ -208,8 +208,7 @@ window.electronAPI.getHomePath().then(homePath => {
     // Update JSON file with latest items
     function updateTodoFile(todos) {
         window.electronAPI.writeFile(filePath, JSON.stringify(todos, null, 2))
-            .catch(err => console.error('Error writing file:', err));
-    }
-}).catch(error => {
+            .catch(err => console.error('Error writing file:', err))
+}}).catch(error => {
     console.error('Error fetching home path:', error);
 });
