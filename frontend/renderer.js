@@ -135,36 +135,28 @@ window.electronAPI.getHomePath().then(homePath => {
     // Load todolist from JSON file
     window.electronAPI.readFile(filePath, 'utf-8')
         .then(data => {
-            todos = JSON.parse(data);
+            // todos = JSON.parse(data);
+            // todos.forEach((todo, index) => appendTodoToList(todo, index));
+            try {
+                todos = data ? JSON.parse(data) : [];  // If data is empty, use an empty array
+            } catch (err) {
+                console.error('Error parsing JSON, initializing with an empty list:', err);
+                todos = [];  // Set to an empty array if parsing fails
+            }
             todos.forEach((todo, index) => appendTodoToList(todo, index));
         })
         .catch(err => console.error('Error reading file:', err));
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const addBut = document.getElementById("addBut");
-        addBut.addEventListener("click", () => {
-            const input = document.getElementById("input_field");
-            const newTodoText = input.value.trim();
-            const isDuplicate = todos.some(item => item.name === newTodoText);
-            if (isDuplicate) {
-                const errorMsg = document.getElementById("error-msg");
-                errorMsg.innerHTML = "This item is already in the todo list!";
-                errorMsg.style.display = "inline";
-                return;
-            }
-            if (newTodoText) {
-                document.getElementById("error-msg").style.display = "none";
-                const newTodo = { name: newTodoText, done: false };
-                todos.push(newTodo);
-                appendTodoToList(newTodo, todos.length - 1);
-                input.value = ""; // Clear input field
-                updateTodoFile(todos); // Save updated list to JSON file
+    if(document.readyState !== 'loading'){
+        console.log("Ready")
+        initializeAdd();
+    } else {
 
-                // Add new todo item to JSON via PowerShell
-                window.electronAPI.runPowerShell(`todo -a "${newTodoText}"`);
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeAdd();
         });
-    });
+
+    }
 
     // Append todo item to DOM
     function appendTodoToList(todo, index) {
@@ -200,8 +192,42 @@ window.electronAPI.getHomePath().then(homePath => {
 
         button.addEventListener("click", () => {
             todo.done = !todo.done;
+            if(button.classList.contains("completed")){
+                window.electronAPI.runPowerShell(`todo -u ${todo.name}`);
+            } else {
+                window.electronAPI.runPowerShell(`todo -d ${todo.name}`);
+            }
             button.classList.toggle("completed");
             updateTodoFile(todos);
+        });
+    }
+    function initializeAdd(){
+        const addBut = document.getElementById("addBut");
+        console.log(addBut)
+
+        addBut.addEventListener("click", () => {
+            console.log("I am clicked")
+            const input = document.getElementById("input_field");
+            const newTodoText = input.value;
+            console.log(newTodoText)
+            const isDuplicate = todos.some(item => item.name === newTodoText);
+            if (isDuplicate) {
+                const errorMsg = document.getElementById("error-msg");
+                errorMsg.innerHTML = "This item is already in the todo list!";
+                errorMsg.style.display = "inline";
+                return;
+            }
+            if (newTodoText) {
+                document.getElementById("error-msg").style.display = "none";
+                const newTodo = { name: newTodoText, done: false };
+                todos.push(newTodo);
+                appendTodoToList(newTodo, todos.length - 1);
+                input.value = ""; // Clear input field
+                updateTodoFile(todos); // Save updated list to JSON file
+
+                // Add new todo item to JSON via PowerShell
+                window.electronAPI.runPowerShell(`todo -a "${newTodoText}"`);
+            }
         });
     }
 

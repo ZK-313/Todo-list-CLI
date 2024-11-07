@@ -12,7 +12,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const PowerShell = require("powershell");
-console.log("I am working");
 
 contextBridge.exposeInMainWorld('electronAPI', {
     getHomePath: () => ipcRenderer.invoke('getHome'), // Get the home path
