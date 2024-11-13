@@ -11,6 +11,9 @@ if not exist "%INSTALL_DIR%" (
 
 :: Copy the JAR file to the installation directory
 copy /Y "todo-jar-with-dependencies.jar" "%INSTALL_DIR%\todo-jar-with-dependencies.jar"
+copy /Y "todo_list.json" "%INSTALL_DIR%\todo_list.json"
+copy /Y "todo_list.ser" "%INSTALL_DIR%\todo_list.ser"
+
 
 :: Create the bin directory if it doesn't exist
 if not exist "%BIN_DIR%" (
